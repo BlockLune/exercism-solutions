@@ -1,5 +1,3 @@
-use std::collections::linked_list;
-
 struct Node<T> {
     pub element: T,
     pub next: Option<Box<Node<T>>>,
@@ -33,21 +31,6 @@ impl<T> SimpleLinkedList<T> {
     }
 
     pub fn push(&mut self, element: T) {
-        let new_node = Box::new(Node::new(element, None));
-        match self.head {
-            Some(ref mut head) => {
-                let mut cur = head;
-                while let Some(ref mut next) = cur.next {
-                    cur = next;
-                }
-                cur.next = Some(new_node);
-            }
-            None => self.head = Some(new_node),
-        }
-        self.size += 1;
-    }
-
-    fn push_front(&mut self, element: T) {
         let new_node = Box::new(Node::new(element, self.head.take()));
         self.head = Some(new_node);
         self.size += 1;
@@ -70,7 +53,7 @@ impl<T> SimpleLinkedList<T> {
         let mut cur = self.head;
 
         while let Some(node) = cur {
-            reversed.push_front(node.element);
+            reversed.push(node.element);
             cur = node.next;
         }
 
@@ -105,6 +88,7 @@ impl<T> From<SimpleLinkedList<T>> for Vec<T> {
         while let Some(element) = linked_list.pop() {
             list.push(element);
         }
+        list.reverse();
         list
     }
 }
